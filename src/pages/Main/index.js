@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { Keyboard, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -18,11 +19,17 @@ import {
 } from './styles';
 
 export default class Main extends Component {
-  // eslint-disable-next-line react/state-in-constructor
   state = {
     newUser: '',
     users: [],
     loading: false,
+  };
+
+  // eslint-disable-next-line react/static-property-placement
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func,
+    }).isRequired,
   };
 
   async componentDidMount() {
@@ -66,6 +73,16 @@ export default class Main extends Component {
     // console.tron.log(this.state.newUser);
   };
 
+  hadleNavigation = user => {
+    const { navigation } = this.props;
+
+    navigation.navigate('User', { user });
+  };
+
+  static navigationOptions = {
+    title: 'Usuários',
+  };
+
   render() {
     const { users, newUser, loading } = this.state;
     return (
@@ -97,7 +114,7 @@ export default class Main extends Component {
               <Name>{item.name}</Name>
               <Bio>{item.bio}</Bio>
 
-              <ProfileButton onPress={() => {}}>
+              <ProfileButton onPress={() => this.hadleNavigation(item)}>
                 <ProfileButtonText>Ver perfil</ProfileButtonText>
               </ProfileButton>
             </User>
@@ -107,7 +124,3 @@ export default class Main extends Component {
     );
   }
 }
-
-Main.navigationOptions = {
-  title: 'Usuários',
-};
